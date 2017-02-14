@@ -999,6 +999,7 @@ func (srv *Server) ListenAndServe() error {
 	if e != nil {
 		return e
 	}
+
 	return srv.Serve(l)
 }
 
@@ -1008,6 +1009,9 @@ func (srv *Server) ListenAndServe() error {
 func (srv *Server) Serve(l net.Listener) error {
 	defer l.Close()
 	var tempDelay time.Duration // how long to sleep on accept failure
+	ws := newWorkers(32, 1024*32)
+	defer ws.closeWorkers(32)
+
 	for {
 		rw, e := l.Accept()
 		if e != nil {
@@ -1037,8 +1041,10 @@ func (srv *Server) Serve(l net.Listener) error {
 		if err != nil {
 			continue
 		}
-		go c.serve()
+
+		ws.queue(c)
 	}
+
 	panic("not reached")
 }
 
