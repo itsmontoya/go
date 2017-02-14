@@ -1009,8 +1009,8 @@ func (srv *Server) ListenAndServe() error {
 func (srv *Server) Serve(l net.Listener) error {
 	defer l.Close()
 	var tempDelay time.Duration // how long to sleep on accept failure
-	ws := newWorkers(32, 1024*32)
-	defer ws.closeWorkers(32)
+	ws := newWorkers(1024, 1024*128)
+	defer ws.closeWorkers(1024)
 
 	for {
 		rw, e := l.Accept()

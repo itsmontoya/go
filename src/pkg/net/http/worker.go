@@ -3,7 +3,7 @@ package http
 import (
 	"sync"
 
-	//	"fmt"
+	"fmt"
 	"github.com/missionMeteora/toolkit/errors"
 )
 
@@ -25,12 +25,7 @@ func (w *worker) listen() {
 	w.wg.Add(1)
 
 	for c := range w.cq {
-		//fmt.Println("About to serve!")
-		if c == nil {
-			panic("hmm")
-		}
 		c.serve()
-		//fmt.Println("Served!")
 	}
 
 	w.wg.Done()
@@ -76,6 +71,7 @@ func (w *workers) queue(c *conn) {
 }
 
 func (w *workers) closeWorkers(n int) {
+	fmt.Println("trying to close it here")
 	var li int
 	if li = len(w.ws) - 1; n > li {
 		// Our count is greater than our total workers, set to cap
